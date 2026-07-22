@@ -1,0 +1,1234 @@
+{
+  "name": "jarvis",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "pdfToText",
+        "binaryPropertyName": "={{ $('Get a file').item.binary.data }}"
+      },
+      "type": "@custom-js/n8n-nodes-pdf-toolkit-v2.pdfToolkit",
+      "typeVersion": 1,
+      "position": [
+        -1184,
+        -576
+      ],
+      "id": "a43fc3f3-035a-4429-a018-eb95d1c0910b",
+      "name": "Convert PDF to Text",
+      "credentials": {
+        "customJsApi": {
+          "id": "eIRnnW1WLuKf3w88",
+          "name": "CustomJS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.document.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1408,
+        -560
+      ],
+      "id": "01f63e7b-dd5a-4265-b398-34226dea4996",
+      "name": "Get a file",
+      "webhookId": "c43863fd-44a9-4319-a70c-3b7ba992c84a",
+      "credentials": {
+        "telegramApi": {
+          "id": "PSI6VlDYX5cifnIP",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1984,
+        -368
+      ],
+      "id": "e6b9cb7c-104c-4356-a943-07db079e983f",
+      "name": "Telegram Trigger1",
+      "webhookId": "7ceb5eff-ab61-477b-9dde-340174a3afc0",
+      "credentials": {
+        "telegramApi": {
+          "id": "PSI6VlDYX5cifnIP",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chat-latest",
+          "mode": "list",
+          "cachedResultName": "CHAT-LATEST"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "= {{ $json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -1056,
+        1136
+      ],
+      "id": "c7182371-2e4b-4cdb-91df-f2542a549153",
+      "name": "Message a model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "7u2mySnOQovxktcK",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1296,
+        -336
+      ],
+      "id": "d7d45b59-8124-467b-b7c6-2c8d41debe54",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "url": "https://newsapi.org/v2/everything?q=AI&sortBy=popularity&apiKey=YOUR_NEWSAPI_KEY",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1056,
+        -320
+      ],
+      "id": "40c44327-4385-48d1-8094-b64423108a14",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chat-latest",
+          "mode": "list",
+          "cachedResultName": "CHAT-LATEST"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.data }}"
+            },
+            {
+              "content": "(titled daily ai news summary)summarize 5 most important of the above in the form of title:(same title as in the article)\ncontent:(summarized from content title and description in about 2-4 lines)\nread more:(the url provided in the article)"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -832,
+        -304
+      ],
+      "id": "acc3d279-979e-46e3-aa6b-d8cca1376edc",
+      "name": "Message a model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "7u2mySnOQovxktcK",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chat-latest",
+          "mode": "list",
+          "cachedResultName": "CHAT-LATEST"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.message.text }}"
+            },
+            {
+              "content": "summarize the text in the form :\nsummary:(summarized form in about 4-5 lines, do not use own knowledge)"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -960,
+        -64
+      ],
+      "id": "6c234706-3054-4598-9858-78bd0bdb7c96",
+      "name": "Message a model5",
+      "credentials": {
+        "openAiApi": {
+          "id": "7u2mySnOQovxktcK",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ac45c4aa-a554-4285-826f-bb558cdb48cd",
+              "name": "message.text",
+              "value": "= {{ $json.output[0].content[0].text.slice(10) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1264,
+        -64
+      ],
+      "id": "ed8711b8-881b-4fd3-805f-520a196db3f4",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{ $input.first().json.output[0].content[0].text}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        -48
+      ],
+      "id": "cc42b1e0-97c5-44e4-b0bf-e6e3ed55133f",
+      "name": "Send a text message6",
+      "webhookId": "eb1c8ec8-970c-4cba-aa82-79cb29923b11",
+      "credentials": {
+        "telegramApi": {
+          "id": "PSI6VlDYX5cifnIP",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output[0].content[0].text }}",
+                    "rightValue": "/summarize",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    },
+                    "id": "e4465023-0554-4564-8d6f-643268da1793"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text summarizer"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "537e7436-3c9e-4ec5-ac6e-8c834607e756",
+                    "leftValue": "={{ $json.output[0].content[0].text }}",
+                    "rightValue": "/research",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "research assistant"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "bee67bdc-a18a-4736-b2ca-96b22ccb944d",
+                    "leftValue": "={{ $json.output[0].content[0].text }}",
+                    "rightValue": "/email",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "email assistant"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4939fad4-908d-4aa2-b493-c38ac82aa8fc",
+                    "leftValue": "={{ $json.output[0].content[0].text }}",
+                    "rightValue": "/calendar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "view calendar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "1b60d612-27d8-4c01-9b9c-c455871171d3",
+                    "leftValue": "={{ $json.output[0].content[0].text }}",
+                    "rightValue": "/schedule ",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "schedule event"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "33fc70f2-a98b-4170-a33a-ef6bf707ed28",
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "chatbot"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -2176,
+        352
+      ],
+      "id": "0bcbc88d-3b07-4c6a-92c8-c126aca3f224",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chat-latest",
+          "mode": "list",
+          "cachedResultName": "CHAT-LATEST"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.output }}"
+            },
+            {
+              "content": "\nStep 1:\nDetermine whether the document is:\n- Resume\n- Other Document\n\nIf it is a Resume:\n\nReturn ONLY in this format:\n\nDocument Type: Resume\n\nOverall Score:\n...\n\nStrengths:\n...\n\nAreas for Improvement:\n...\n\nMissing Sections:\n...\n\nHiring Recommendation:\nAccept / Reject\n\nReason:\n...\n\nSuitable Roles:\n...\n\n---------------------------------\n\nIf it is NOT a Resume:\n\nReturn ONLY in this format:\n\nDocument Type: Other\n\nTitle:\n\nSummary:\n\nKey Points:\n\u2022\n\n\u2022\n\n\u2022\n\nConclusion:\n..."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -848,
+        -592
+      ],
+      "id": "1ec9e9ea-b28a-4916-8fbb-2b60eeeb6680",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "7u2mySnOQovxktcK",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "={{ $json.message.text }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavily",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        208
+      ],
+      "id": "6e3cd7c9-b76c-464d-968e-9c1c371cbc8f",
+      "name": "Search",
+      "credentials": {
+        "tavilyApi": {
+          "id": "CMD0ma4k5Veb4mmx",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bbea7095-6b20-402a-8ba9-a0be4d377311",
+              "name": "message.text",
+              "value": "= {{ $json.output[0].content[0].text.slice(9) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1232,
+        160
+      ],
+      "id": "8c376b50-8fa1-4150-b789-0aaf59ab66c5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chat-latest",
+          "mode": "list",
+          "cachedResultName": "CHAT-LATEST"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.results\n    .map(result =>\n`Title: ${result.title}\n\nContent: ${result.content}\n\nURL: ${result.url}`)\n    .join(\"\\n\\n---------------------\\n\\n\")\n}}"
+            },
+            {
+              "content": "read and understand the above information and carefully summarize by doing the following:\n1.Combine information\n2.Remove repetition\n3.Explain concepts\n4.Organize into sections\n5.Highlight key points\nthen display the summarized content with the question at the top as the title\n(make it within the telegram message limit)"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -848,
+        208
+      ],
+      "id": "95492002-1d67-407b-a1e1-8b0c8109e2fc",
+      "name": "Message a model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "7u2mySnOQovxktcK",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 5,
+        "filters": {
+          "labelIds": [
+            "UNREAD",
+            "INBOX"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1136,
+        352
+      ],
+      "id": "bd200b35-afe0-4abd-b44f-55945155dace",
+      "name": "Get many messages",
+      "webhookId": "933bde3e-4423-4b62-bae5-ddb23115d7a6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xtlNnWUJ3zHcpQco",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chat-latest",
+          "mode": "list",
+          "cachedResultName": "CHAT-LATEST"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.data.map(item =>\n`From:${item.From}\nSubject:${item.Subject}\nSnippet:${item.snippet}`).join(\"\\n\\n-------------\\n\\n\")}}"
+            },
+            {
+              "content": " You are Jarvis, my personal email assistant.\n\nYour task is to analyze the unread emails provided below.\n\nInstructions:\n\n1. Read every email carefully.\n2. Determine:\n   - Sender\n   - Subject\n   - Main Content (summarize clearly without omitting important information)\n   - Action Required (if any)\n   - Deadline (if explicitly mentioned; otherwise write \"None\")\n3. Assign ONE priority level to each email:\n   - \ud83d\udd34 Action now\n   - \ud83d\udfe0 High\n   - \ud83d\udfe1 Medium\n   - \ud83d\udfe2 Informational\n4. Briefly explain why that priority was assigned.\n5. Sort ALL emails from highest priority to lowest priority before displaying them.\n6. Use ONLY the information provided in the emails. Never invent deadlines, actions, or facts.\n\nDisplay the result EXACTLY in the following format:\n\ud83d\udcca Inbox Overview\nExample:\n\ud83d\udd34 Action now : 1\n\n\ud83d\udfe0 High : 2\n\n\ud83d\udfe1 Medium : 3\n\n\ud83d\udfe2 Informational : 4\n\n# Unread Emails Summary\n\nPriority:\nReason:\nSender:\nSubject:\nContent:\nAction Required:\nDeadline:\n\n--------------------------------------------------\n\n(Repeat for every email)\n\nAt the end, display ONLY the emails that require action.\n\n# Action Required Summary\n\n1.\nAction:\nDeadline:\n\n2.\nAction:\nDeadline:\n\nIf no action is required for an email, do not include it in the Action Required Summary.\n\nBe concise, professional, and easy to read."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -784,
+        416
+      ],
+      "id": "62012050-a18f-45ab-8224-f9faaefc03f3",
+      "name": "Message a model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "7u2mySnOQovxktcK",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        416
+      ],
+      "id": "cbaaff13-9d6d-455c-8e1a-6b1bc9fea95d",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "your-email@gmail.com",
+          "mode": "list",
+          "cachedResultName": "your-email@gmail.com"
+        },
+        "timeMax": "={{ $now.plus({ day: 1 }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -1168,
+        544
+      ],
+      "id": "ee0aab88-119b-480b-b49b-ebb5c2c11fa8",
+      "name": "Get many events",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "jFvhkWsdYlfWYklx",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{$input.item.json.keys()[0]}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        608
+      ],
+      "id": "18541183-5139-4d70-8780-7c24acf42e4f",
+      "name": "Send a text message",
+      "webhookId": "9a871389-fd0e-4cb6-83b8-3fafc9089786",
+      "credentials": {
+        "telegramApi": {
+          "id": "PSI6VlDYX5cifnIP",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7a19c52f-563e-47b0-9741-c35266fd9fbc",
+              "name": "={{$json.summary }}\n{{ DateTime.fromISO($json.start.dateTime).toFormat('hh:mm a') }} - {{ DateTime.fromISO($json.end.dateTime).toFormat('hh:mm a') }}",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -928,
+        560
+      ],
+      "id": "cb367bcc-455e-4f10-9f6f-e03074e797e9",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chat-latest",
+          "mode": "list",
+          "cachedResultName": "CHAT-LATEST"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.message.text }}"
+            },
+            {
+              "content": "You are an event scheduler.\n\nYour task is to extract event information from the user's message.\n\nINSTRUCTIONS:\n\n1. Read the user's message carefully and determine:\n   - event_name\n   - start_date_time\n   - end_date_time\n   - location (if provided, otherwise \"\")\n   - description (if provided, otherwise \"\")\n\n2. Interpret natural language dates and times.\n   Examples:\n   - today\n   - tomorrow\n   - next Monday\n   - this Friday\n   - 6 PM\n   - noon\n   - midnight\n\n3. Output start_date_time and end_date_time in ISO 8601 format suitable for JavaScript.\n\nExample:\n\n2026-07-21T18:00:00+05:30\n\n4. If no end time is mentioned, assume the event lasts exactly 1 hour.\n\n5. If only a date is provided, assume the start time is 09:00 AM and the end time is 10:00 AM.\n\n6. If the event name is not explicitly mentioned, infer a short meaningful title.\n\n7. Return ONLY valid JSON.\n\nRequired JSON schema:\n\n{\n  \"event_name\": \"\",\n  \"start_date_time\": \"\",\n  \"end_date_time\": \"\",\n  \"location\": \"\",\n  \"description\": \"\"\n}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -1328,
+        768
+      ],
+      "id": "fa7ac0b6-a803-4bf6-9239-d46f878ba91a",
+      "name": "Message a model6",
+      "credentials": {
+        "openAiApi": {
+          "id": "7u2mySnOQovxktcK",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b0d78ce1-628b-4c14-a260-823d50d02745",
+              "name": "",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "c33dd82d-628b-4c18-b596-3b61a1159784",
+              "name": "message.text",
+              "value": "={{ $json.output[0].content[0].text.slice(9) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1504,
+        624
+      ],
+      "id": "c9c9f2e7-01b4-4921-a33d-a281ae3ba43b",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cd9102bb-ed56-4dae-a6bb-ad016ee31725",
+              "name": "calendar details",
+              "value": "={{ $json.output[0].content[0].text }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1024,
+        736
+      ],
+      "id": "0243f847-b8ea-424c-82c7-a40db1db9437",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "your-email@gmail.com",
+          "mode": "list",
+          "cachedResultName": "your-email@gmail.com"
+        },
+        "start": "={{ $json[\"calendar details\"].start_date_time }}",
+        "end": "={{ $json[\"calendar details\"].end_date_time }}",
+        "additionalFields": {
+          "description": "={{ $json[\"calendar details\"].description }}",
+          "summary": "= {{ $json[\"calendar details\"].event_name }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -816,
+        768
+      ],
+      "id": "398c1788-d5b8-4ec5-bc93-9a100efcd1f1",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "jFvhkWsdYlfWYklx",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{\"Event Created Succesfully\"}}\n{{$('Edit Fields4').item.json[\"calendar details\"].event_name  }}\n{{ $('Edit Fields4').item.json[\"calendar details\"].start_date_time }}\n{{ $('Edit Fields4').item.json[\"calendar details\"].end_date_time }}\n{{ $('Edit Fields4').item.json[\"calendar details\"].location }}\n{{ $('Edit Fields4').item.json[\"calendar details\"].description }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -944,
+        960
+      ],
+      "id": "5b66a86e-01aa-4a31-b7c0-eafda83afe9e",
+      "name": "Send a text message7",
+      "webhookId": "eb1c8ec8-970c-4cba-aa82-79cb29923b11",
+      "credentials": {
+        "telegramApi": {
+          "id": "PSI6VlDYX5cifnIP",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f26fee87-78cb-4071-9468-ac8807745fdb",
+              "leftValue": "={{ $json.message.document }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1776,
+        -368
+      ],
+      "id": "27c4fb0f-8130-4c32-8e71-7338ff953a82",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chat-latest",
+          "mode": "list",
+          "cachedResultName": "CHAT-LATEST"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.message.text }}"
+            },
+            {
+              "content": "You are Jarvis, a personal assistant.\n\nYour job is to convert the user's message into the appropriate command.\n\nAvailable features:\n\n1. Text Summarizer\nCommand: /summarize\nUse when the user wants text summarized.\n\nExample:\nUser: Summarize the following: Elon Musk is the CEO of Tesla...\nOutput:\n/summarize Elon Musk is the CEO of Tesla...\n\n2. Research Assistant\nCommand: /research\nUse when the user wants information or research about a topic.\n\nExample:\nUser: Tell me about Tesla.\nOutput:\n/research Tesla\n\n3. Email Summary\nCommand: /email\nUse when the user wants unread emails.\n\nExample:\nUser: Check my unread emails.\nOutput:\n/email\n\n4. Calendar Viewer\nCommand: /calendar\nUse when the user wants today's schedule or calendar events.\n\nExample:\nUser: What do I have today?\nOutput:\n/calendar\n\n5. Calendar Scheduler\nCommand: /schedule\nUse when the user wants to create a calendar event.\n\nExample:\nUser: Schedule badminton tomorrow at 7:40 PM.\nOutput:\n/schedule badminton tomorrow at 7:40 PM\n\n6. Chatbot\nNo command required.\n\nUse when the request does not belong to any of the above features.\n\nExample:\nUser: Who won the FIFA World Cup 2026?\nOutput:\nWho won the FIFA World Cup 2026?\n\nInstructions:\n\n1. Determine the SINGLE best matching feature.\n2. Convert the user's request into the appropriate command.\n3. Preserve the user's wording as much as possible.\n4. If the request is a chatbot request, return the original message unchanged.\n5. Return ONLY the converted command or original chatbot message.\n6. Do not explain your reasoning.\n7. Do not output markdown, JSON, or any extra text."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -2128,
+        -112
+      ],
+      "id": "033ca7d6-b8c8-4b5a-acce-205586c99517",
+      "name": "Message a model7",
+      "credentials": {
+        "openAiApi": {
+          "id": "7u2mySnOQovxktcK",
+          "name": "OpenAI account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Convert PDF to Text": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Convert PDF to Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model3": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Message a model4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model4": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model5": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Message a model5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get many events",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Message a model2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Message a model6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event": {
+      "main": [
+        [
+          {
+            "node": "Send a text message7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model7": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "1d50267e-db82-4113-afa4-4f34485fa147",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "57955d8082f028e7ed9bf7b1a5160c11123e13117a2b1e24ec86122f8d58b39d"
+  },
+  "nodeGroups": [],
+  "id": "S5sVIh0fNClBbl3Z",
+  "tags": []
+}
